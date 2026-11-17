@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_availability_alert_company" model="ir.rule">
+        <field name="name">Stock reminders: active companies</field>
+        <field name="model_id" ref="model_alsweed_availability_alert"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_availability_alert_owner" model="ir.rule">
+        <field name="name">Stock reminders: own reminders</field>
+        <field name="model_id" ref="model_alsweed_availability_alert"/>
+        <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>
+</odoo>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_availability_alert_list" model="ir.ui.view">
+        <field name="name">alsweed.availability.alert.list</field>
+        <field name="model">alsweed.availability.alert</field>
+        <field name="arch" type="xml">
+            <list string="Notify Me" edit="false" delete="false">
+                <field name="product_id"/>
+                <field name="warehouse_id"/>
+                <field name="quantity"/>
+                <field name="uom_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state" widget="badge"/>
+                <field name="activity_ids" widget="list_activity"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_availability_alert_form" model="ir.ui.view">
+        <field name="name">alsweed.availability.alert.form</field>
+        <field name="model">alsweed.availability.alert</field>
+        <field name="arch" type="xml">
+            <form string="Notify Me" edit="false" delete="false">
+                <header>
+                    <button name="action_check_now" string="Check Now" type="object" class="oe_highlight" invisible="state != 'waiting' or not id"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state != 'waiting' or not id"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="company_id" domain="[('id', 'in', allowed_company_ids)]"/>
+                        <field name="product_id" options="{'no_create': True}"/>
+                        <field name="warehouse_id" domain="[('company_id', '=', company_id)]" options="{'no_create': True}"/>
+                        <field name="quantity"/>
+                        <field name="uom_id"/>
+                        <field name="user_id"/>
+                    </group>
+                    <p>A reminder creates an Odoo activity when enough unreserved stock is available. It does not reserve stock.</p>
+                    <field name="activity_ids" widget="mail_activity"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_availability_alert" model="ir.actions.act_window">
+        <field name="name">Notify Me</field>
+        <field name="res_model">alsweed.availability.alert</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_notify_me" name="Notify Me" sequence="90" groups="sales_team.group_sale_salesman"/>
+    <menuitem id="menu_availability_alert" name="My Reminders" parent="menu_notify_me" action="action_availability_alert"/>
+</odoo>
